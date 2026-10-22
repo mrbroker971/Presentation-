@@ -1,5 +1,68 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Empire City Real Estate — презентация</title><style>
-*{box-sizing:border-box}html,body{margin:0;height:100%;background:#151d24;overflow:hidden;font-family:Arial,sans-serif;color:#fff}button{font:inherit;cursor:pointer}.frame{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}.slide{position:absolute;inset:0;display:grid;place-items:center;opacity:0;visibility:hidden;transition:opacity 1.05s ease,visibility 1.05s}.slide.active{opacity:1;visibility:visible;z-index:1}.slide img{width:100%;height:100%;object-fit:contain;display:block;transform:scale(1.012);transition:transform 9s ease-out;filter:none}.slide.active img{transform:scale(1)}.controls{position:fixed;z-index:5;bottom:17px;left:50%;transform:translateX(-50%);display:flex;gap:12px;align-items:center;padding:8px 12px;border-radius:40px;background:rgba(16,22,27,.6);backdrop-filter:blur(9px);border:1px solid #fff3;white-space:nowrap}.controls button,.topbtn{background:#ffffff12;border:1px solid #ffffff47;border-radius:25px;color:#fff;padding:7px 13px}.controls button:hover,.topbtn:hover{background:#ffffff30}.dots{display:flex;gap:6px}.dots button{width:21px;height:4px;padding:0;border-radius:2px;border:0;background:#ffffff70}.dots button.on{background:#e7b776}.count{font-size:12px;color:#fff;letter-spacing:.1em}.top{position:fixed;top:12px;right:14px;z-index:5;display:flex;gap:8px}.topbtn{font-size:12px;background:#13192080}.controls button:focus-visible,.topbtn:focus-visible{outline:2px solid #e7b776}@media(max-width:680px){.controls{bottom:10px;gap:7px;padding:7px}.controls button{padding:7px 9px}.dots button{width:13px}.top{top:6px;right:6px}.slide img{transform:none!important}}@media(prefers-reduced-motion:reduce){.slide,.slide img{transition:none!important;transform:none!important}}
-</style></head><body><main class="frame" id="frame" aria-label="Презентация Empire City"></main><div class="top"><button class="topbtn" id="play" aria-label="Автопоказ">▶ Автопоказ</button><button class="topbtn" id="full" aria-label="Полноэкранный режим">⛶</button></div><nav class="controls" aria-label="Навигация"><button id="prev" aria-label="Предыдущий слайд">‹</button><span class="count" id="count">01 / 07</span><div class="dots" id="dots"></div><button id="next" aria-label="Следующий слайд">›</button></nav><script>
-const names=['Пелих Иван','7 эмиратов','Dubai 2040','Empire City Real Estate','Миграция капитала','Жизнь в Дубае','7 мастер-планов'];const slides=[],dots=[];const holder=document.getElementById('frame');const nav=document.getElementById('dots');for(let i=0;i<7;i++){const scene=document.createElement('section');scene.className='slide';const img=document.createElement('img');img.src=`assets/slide-${String(i+1).padStart(2,'0')}.webp`;img.alt=names[i];img.decoding='async';if(i===0)img.fetchPriority='high';scene.append(img);holder.append(scene);slides.push(scene);const b=document.createElement('button');b.setAttribute('aria-label',`Слайд ${i+1}`);b.addEventListener('click',()=>show(i));nav.append(b);dots.push(b)}let current=0,playing=false,timer=null;function show(n){current=(n+7)%7;slides.forEach((s,i)=>s.classList.toggle('active',i===current));dots.forEach((b,i)=>b.classList.toggle('on',i===current));document.getElementById('count').textContent=`${String(current+1).padStart(2,'0')} / 07`;}function next(){show(current+1)}function prev(){show(current-1)}function toggle(){playing=!playing;document.getElementById('play').textContent=playing?'Ⅱ Пауза':'▶ Автопоказ';clearInterval(timer);if(playing)timer=setInterval(next,8000)}document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;document.getElementById('play').onclick=toggle;document.getElementById('full').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.();document.addEventListener('keydown',e=>{if(['ArrowRight','ArrowDown','PageDown'].includes(e.key)){e.preventDefault();next()}if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();prev()}if(e.key===' '){e.preventDefault();toggle()}});let sx=0,sy=0;document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))dx<0?next():prev()},{passive:true});show(0);
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#151d24;overflow:hidden;font-family:Arial,sans-serif;color:#fff}button{font:inherit;cursor:pointer}
+.frame{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+.slide{position:absolute;inset:0;display:grid;place-items:center;opacity:0;visibility:hidden;transition:opacity 1.05s ease,visibility 1.05s}.slide.active{opacity:1;visibility:visible;z-index:1}
+.visual{position:absolute;inset:0}.slide img{width:100%;height:100%;object-fit:contain;display:block;transform:scale(1.012);transition:transform 9s ease-out;filter:none}.slide.active img{transform:scale(1)}
+.overlay{position:absolute;inset:0;pointer-events:none}
+.metric{position:absolute;display:flex;align-items:center;justify-content:center;min-width:70px;min-height:40px;padding:.12em .42em;border-radius:14px;background:rgba(246,240,231,.96);border:1px solid rgba(157,128,84,.22);box-shadow:0 6px 18px rgba(54,33,9,.08);font-family:Georgia,"Times New Roman",serif;font-weight:500;color:#9a6d31;line-height:1;letter-spacing:-.02em;opacity:0;transform:translateY(10px) scale(.96);transition:opacity .5s ease,transform .5s ease}
+.slide.active .metric{opacity:1;transform:translateY(0) scale(1)}
+.metric.dark{background:rgba(67,47,30,.88);border-color:rgba(255,227,181,.16);box-shadow:0 10px 24px rgba(0,0,0,.18);color:#efcc8f}
+.metric.circle{border-radius:999px}
+.metric.soft{background:rgba(247,243,236,.88)}
+.metric .num{white-space:nowrap}
+.metric.s3a{left:7.2%;top:83.7%;font-size:2.2vw}.metric.s3b{left:18.7%;top:84.1%;font-size:2.0vw}.metric.s3c{left:30.4%;top:84.05%;font-size:2.0vw}.metric.s3d{left:41.9%;top:84.1%;font-size:2.0vw}
+.metric.s4a{left:8.2%;top:50.6%;font-size:2.2vw}.metric.s4b{left:27.0%;top:50.6%;font-size:2.2vw}.metric.s4c{left:44.7%;top:50.6%;font-size:2.2vw}.metric.s4d{left:59.8%;top:50.6%;font-size:2.2vw}
+.metric.s5a{left:7.0%;top:29.8%;font-size:3.3vw;padding:.05em .25em;min-height:54px}.metric.s5b{left:62.0%;top:43.8%;font-size:3.0vw;width:12.8vw;height:12.8vw;min-width:120px;min-height:120px;text-align:center;flex-direction:column;gap:.06em}
+.metric.s5b .small{font-size:.36em;line-height:1.1;letter-spacing:0;color:#ead6b1}
+.metric.s6a{left:7.3%;top:42.8%;font-size:2.9vw}.metric.s6b{left:5.3%;top:91.8%;font-size:2.0vw}.metric.s6c{left:24.7%;top:91.8%;font-size:2.0vw}.metric.s6d{left:43.4%;top:91.8%;font-size:2.0vw}.metric.s6e{left:60.7%;top:91.8%;font-size:2.0vw}
+.metric.s7a{left:57.2%;top:70.3%;font-size:2.2vw;min-width:9.2vw}.metric.s7b{left:6.4%;top:91.5%;font-size:1.8vw}.metric.s7c{left:35.5%;top:91.5%;font-size:1.8vw;min-width:9.4vw}
+.controls{position:fixed;z-index:5;bottom:17px;left:50%;transform:translateX(-50%);display:flex;gap:12px;align-items:center;padding:8px 12px;border-radius:40px;background:rgba(16,22,27,.6);backdrop-filter:blur(9px);border:1px solid #fff3;white-space:nowrap}.controls button,.topbtn{background:#ffffff12;border:1px solid #ffffff47;border-radius:25px;color:#fff;padding:7px 13px}.controls button:hover,.topbtn:hover{background:#ffffff30}.dots{display:flex;gap:6px}.dots button{width:21px;height:4px;padding:0;border-radius:2px;border:0;background:#ffffff70}.dots button.on{background:#e7b776}.count{font-size:12px;color:#fff;letter-spacing:.1em}.top{position:fixed;top:12px;right:14px;z-index:5;display:flex;gap:8px}.topbtn{font-size:12px;background:#13192080}.controls button:focus-visible,.topbtn:focus-visible{outline:2px solid #e7b776}
+@media(max-width:680px){.controls{bottom:10px;gap:7px;padding:7px}.controls button{padding:7px 9px}.dots button{width:13px}.top{top:6px;right:6px}.slide img{transform:none!important}.metric{border-radius:10px}.metric.s5b{width:19vw;height:19vw}.metric{font-size:max(14px,1.8vw)!important;min-height:26px}}
+@media(prefers-reduced-motion:reduce){.slide,.slide img,.metric{transition:none!important;transform:none!important}}</style></head><body>
+<main class="frame" id="frame" aria-label="Презентация Empire City"></main>
+<div class="top"><button class="topbtn" id="play" aria-label="Автопоказ">▶ Автопоказ</button><button class="topbtn" id="full" aria-label="Полноэкранный режим">⛶</button></div>
+<nav class="controls" aria-label="Навигация"><button id="prev" aria-label="Предыдущий слайд">‹</button><span class="count" id="count">01 / 07</span><div class="dots" id="dots"></div><button id="next" aria-label="Следующий слайд">›</button></nav>
+<script>
+const names=['Пелих Иван','7 эмиратов','Dubai 2040','Empire City Real Estate','Миграция капитала','Жизнь в Дубае','7 мастер-планов'];
+const metricDefs={
+2:[
+ {cls:'s3a soft',value:65,suffix:'%'},
+ {cls:'s3b soft',value:4,prefix:'x'},
+ {cls:'s3c soft',value:20},
+ {cls:'s3d soft',value:8,prefix:'~',suffix:' млн'}],
+3:[
+ {cls:'s4a soft',value:150,suffix:'+'},
+ {cls:'s4b soft',value:1000,suffix:'+'},
+ {cls:'s4c soft',value:10},
+ {cls:'s4d soft',value:200,suffix:'+'}],
+4:[
+ {cls:'s5a',value:6700,prefix:'+ ',group:true},
+ {cls:'s5b dark circle',value:6700,prefix:'+ ',group:true,html:'<span class="small">ОАЭ</span><span class="num"></span>'}],
+5:[
+ {cls:'s6a',value:350,suffix:'+'},
+ {cls:'s6b',value:200,suffix:'+'},
+ {cls:'s6c',value:7,suffix:' км'},
+ {cls:'s6d',value:1200,suffix:'+'},
+ {cls:'s6e',value:45,suffix:'+'}],
+6:[
+ {cls:'s7a soft',value:8,prefix:'~',suffix:' млн'},
+ {cls:'s7b soft',value:4.58,suffix:' млн',decimals:2},
+ {cls:'s7c soft',value:332000,prefix:'+ ',group:true}]
+};
+const slides=[],dots=[];const holder=document.getElementById('frame');const nav=document.getElementById('dots');
+for(let i=0;i<7;i++){
+ const scene=document.createElement('section');scene.className='slide';
+ const visual=document.createElement('div');visual.className='visual';
+ const img=document.createElement('img');img.src=`assets/slide-${String(i+1).padStart(2,'0')}.webp`;img.alt=names[i];img.decoding='async';if(i===0)img.fetchPriority='high';visual.append(img);scene.append(visual);
+ const overlay=document.createElement('div');overlay.className='overlay';
+ (metricDefs[i]||[]).forEach((m,mi)=>{const box=document.createElement('div');box.className='metric '+m.cls;box.dataset.value=m.value;box.dataset.prefix=m.prefix||'';box.dataset.suffix=m.suffix||'';box.dataset.decimals=m.decimals||0;box.dataset.group=m.group?'1':'';box.style.transitionDelay=(0.18+mi*0.12)+'s';if(m.html){box.innerHTML=m.html}else{box.innerHTML='<span class="num"></span>';}overlay.append(box);});
+ scene.append(overlay); holder.append(scene); slides.push(scene);
+ const b=document.createElement('button');b.setAttribute('aria-label',`Слайд ${i+1}`);b.addEventListener('click',()=>show(i));nav.append(b);dots.push(b)
+}
+function formatNum(val,decimals,group){let out=Number(val).toFixed(decimals);if(decimals)out=out.replace('.',',');if(group){let parts=out.split(',');parts[0]=Number(parts[0]).toLocaleString('ru-RU');out=parts.length>1?parts[0]+','+parts[1]:parts[0];}return out}
+function animateMetrics(scene){scene.querySelectorAll('.metric').forEach(el=>{const node=el.querySelector('.num')||el;const target=parseFloat(el.dataset.value||'0');const prefix=el.dataset.prefix||'';const suffix=el.dataset.suffix||'';const decimals=parseInt(el.dataset.decimals||'0',10);const group=el.dataset.group==='1';const duration=1450;const start=performance.now();function step(now){const p=Math.min((now-start)/duration,1);const eased=1-Math.pow(1-p,3);const val=target*eased;node.textContent=prefix+formatNum(val,decimals,group)+suffix;if(p<1)requestAnimationFrame(step);else node.textContent=prefix+formatNum(target,decimals,group)+suffix;}requestAnimationFrame(step);})}
+let current=0,playing=false,timer=null;function show(n){current=(n+7)%7;slides.forEach((s,i)=>s.classList.toggle('active',i===current));dots.forEach((b,i)=>b.classList.toggle('on',i===current));document.getElementById('count').textContent=`${String(current+1).padStart(2,'0')} / 07`;setTimeout(()=>animateMetrics(slides[current]),160)}
+function next(){show(current+1)}function prev(){show(current-1)}function toggle(){playing=!playing;document.getElementById('play').textContent=playing?'Ⅱ Пауза':'▶ Автопоказ';clearInterval(timer);if(playing)timer=setInterval(next,8000)}
+document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;document.getElementById('play').onclick=toggle;document.getElementById('full').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.();
+document.addEventListener('keydown',e=>{if(['ArrowRight','ArrowDown','PageDown'].includes(e.key)){e.preventDefault();next()}if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();prev()}if(e.key===' '){e.preventDefault();toggle()}});let sx=0,sy=0;document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))dx<0?next():prev()},{passive:true});show(0);
 </script></body></html>
